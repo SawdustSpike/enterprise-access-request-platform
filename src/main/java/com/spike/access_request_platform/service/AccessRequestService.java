@@ -66,7 +66,7 @@ public class AccessRequestService {
                 .orElseThrow(() -> new ResourceNotFoundException("Access request not found"));
         if (accessRequest.getStatus() != RequestStatus.PENDING) {
             throw new RuntimeException(
-                    "Only pending requests can be approved");
+                    "Only pending requests can be denied");
         }
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null) {

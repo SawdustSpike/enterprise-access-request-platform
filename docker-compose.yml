@@ -1,0 +1,22 @@
+services:
+  postgres:
+    image: postgres:16
+    container_name: access-platform-postgres
+    environment:
+      POSTGRES_DB: accessplatform
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5433:5432"
+
+  app:
+    build: .
+    container_name: access-request-platform
+    depends_on:
+      - postgres
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/accessplatform
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: postgres
+    ports:
+      - "8080:8080"

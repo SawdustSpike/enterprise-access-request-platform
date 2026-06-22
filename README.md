@@ -13,7 +13,15 @@ A Java 21 / Spring Boot enterprise access governance application that supports a
 - Swagger / OpenAPI
 - Docker / Docker Compose
 - JUnit / Mockito
+## Live Azure Deployment
 
+Health check:
+
+https://access-request-platform.bluedesert-6a38596d.eastus2.azurecontainerapps.io/health
+
+Swagger UI:
+
+https://access-request-platform.bluedesert-6a38596d.eastus2.azurecontainerapps.io/swagger-ui/index.html
 ## Running with Docker
 
 ```bash

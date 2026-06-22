@@ -5,6 +5,7 @@ import com.spike.access_request_platform.dto.CreateAccessRequestDto;
 import com.spike.access_request_platform.model.AccessRequest;
 import com.spike.access_request_platform.model.RequestStatus;
 import com.spike.access_request_platform.repository.AccessRequestRepository;
+import com.spike.access_request_platform.repository.AuditLogRepository;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
@@ -18,8 +19,11 @@ class AccessRequestServiceTest {
     private final AccessRequestRepository repository =
             Mockito.mock(AccessRequestRepository.class);
 
+    private final AuditService auditService =
+            Mockito.mock(AuditService.class);
+
     private final AccessRequestService service =
-            new AccessRequestService(repository);
+            new AccessRequestService(repository, auditService);
 
     @Test
     void createAccessRequest_setsStatusToPending() {

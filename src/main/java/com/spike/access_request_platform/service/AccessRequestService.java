@@ -4,6 +4,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import com.spike.access_request_platform.dto.CreateAccessRequestDto;
 import com.spike.access_request_platform.model.AccessRequest;
+import com.spike.access_request_platform.service.AuditService;
 import com.spike.access_request_platform.model.RequestStatus;
 import com.spike.access_request_platform.repository.AccessRequestRepository;
 import org.springframework.stereotype.Service;
@@ -18,9 +19,12 @@ import java.util.List;
 public class AccessRequestService {
 
     private final AccessRequestRepository accessRequestRepository;
-
-    public AccessRequestService(AccessRequestRepository accessRequestRepository) {
-        this.accessRequestRepository = accessRequestRepository;
+    private final AuditService auditService;
+    public AccessRequestService(
+            AccessRequestRepository repository,
+            AuditService auditService) {
+        this.accessRequestRepository = repository;
+        this.auditService = auditService;
     }
 
     public AccessRequestResponseDto  createAccessRequest(CreateAccessRequestDto dto) {
@@ -57,7 +61,12 @@ public class AccessRequestService {
         accessRequest.setDecidedBy(managerName);
         accessRequest.setDecisionDate(LocalDateTime.now());
         accessRequest.setStatus(RequestStatus.APPROVED);
-
+        auditService.log(
+                accessRequest.getId(),
+                "APPROVED",
+                "system",
+                "Request approved"
+        );
         return accessRequestRepository.save(accessRequest);
     }
 
@@ -77,7 +86,12 @@ public class AccessRequestService {
         accessRequest.setDecidedBy(managerName);
         accessRequest.setDecisionDate(LocalDateTime.now());
         accessRequest.setStatus(RequestStatus.DENIED);
-
+        auditService.log(
+                accessRequest.getId(),
+                "DENIED",
+                "system",
+                "Request denied"
+        );
         return accessRequestRepository.save(accessRequest);
     }
     public List<AccessRequestResponseDto> getPendingRequests() {

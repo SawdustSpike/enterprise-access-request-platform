@@ -2,8 +2,10 @@ package com.spike.access_request_platform.controller;
 import com.spike.access_request_platform.dto.AccessRequestResponseDto;
 import com.spike.access_request_platform.dto.CreateAccessRequestDto;
 import com.spike.access_request_platform.model.AccessRequest;
+import com.spike.access_request_platform.model.AuditLog;
 import com.spike.access_request_platform.model.RequestStatus;
 import com.spike.access_request_platform.service.AccessRequestService;
+import com.spike.access_request_platform.repository.AuditLogRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import jakarta.validation.Valid;
@@ -15,9 +17,13 @@ import java.util.List;
 public class AccessRequestController {
 
     private final AccessRequestService accessRequestService;
+    private final AuditLogRepository auditLogRepository;
+    public AccessRequestController(
+            AccessRequestService service,
+            AuditLogRepository auditLogRepository) {
 
-    public AccessRequestController(AccessRequestService accessRequestService) {
-        this.accessRequestService = accessRequestService;
+        this.accessRequestService = service;
+        this.auditLogRepository = auditLogRepository;
     }
 
     @PostMapping
@@ -54,5 +60,9 @@ public class AccessRequestController {
     @GetMapping("/system/{systemName}")
     public List<AccessRequestResponseDto> getRequestsBySystem(@PathVariable String systemName) {
         return accessRequestService.getRequestsBySystem(systemName);
+    }
+    @GetMapping("/audit")
+    public List<AuditLog> getAuditLog() {
+        return auditLogRepository.findAll();
     }
 }

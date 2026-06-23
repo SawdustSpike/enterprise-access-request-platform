@@ -24,7 +24,7 @@ public class SecurityConfig {
                         .requestMatchers("/health").permitAll()
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
 
-                        .requestMatchers(HttpMethod.POST, "/access-requests").hasAnyRole("EMPLOYEE", "ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/access-requests").hasAnyRole("EMPLOYEE", "MANAGER", "ADMIN")
                         .requestMatchers(HttpMethod.GET, "/access-requests/**").hasAnyRole("MANAGER", "ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/access-requests/**").hasAnyRole("MANAGER", "ADMIN")
 
@@ -40,20 +40,17 @@ public class SecurityConfig {
 
         PasswordEncoder encoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
 
-        UserDetails employee = User.builder()
-                .username("employee")
+        UserDetails employee = User.withUsername("employee")
                 .password(encoder.encode("password"))
                 .roles("EMPLOYEE")
                 .build();
 
-        UserDetails manager = User.builder()
-                .username("manager")
+        UserDetails manager = User.withUsername("manager")
                 .password(encoder.encode("password"))
                 .roles("MANAGER")
                 .build();
 
-        UserDetails admin = User.builder()
-                .username("admin")
+        UserDetails admin = User.withUsername("admin")
                 .password(encoder.encode("password"))
                 .roles("ADMIN")
                 .build();

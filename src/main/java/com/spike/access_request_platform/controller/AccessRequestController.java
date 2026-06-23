@@ -9,6 +9,7 @@ import com.spike.access_request_platform.repository.AuditLogRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import jakarta.validation.Valid;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
@@ -35,14 +36,17 @@ public class AccessRequestController {
         return accessRequestService.getPagedAccessRequests(pageable);
     }
     @PutMapping("/{id}/approve")
+    @PreAuthorize("hasAnyRole('MANAGER','ADMIN')")
     public AccessRequest approveAccessRequest(@PathVariable Long id) {
         return accessRequestService.approveAccessRequest(id);
     }
 
     @PutMapping("/{id}/deny")
+    @PreAuthorize("hasAnyRole('MANAGER','ADMIN')")
     public AccessRequest denyAccessRequest(@PathVariable Long id) {
         return accessRequestService.denyAccessRequest(id);
     }
+
     @GetMapping("/pending")
     public List<AccessRequestResponseDto> getPendingRequests() {
         return accessRequestService.getPendingRequests();

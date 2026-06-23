@@ -10,6 +10,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import jakarta.validation.Valid;
 import org.springframework.security.access.prepost.PreAuthorize;
+import com.spike.access_request_platform.dto.DecisionDto;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
@@ -35,16 +36,26 @@ public class AccessRequestController {
     public Page<AccessRequestResponseDto> getAllAccessRequests(Pageable pageable) {
         return accessRequestService.getPagedAccessRequests(pageable);
     }
-    @PutMapping("/{id}/approve")
+    @GetMapping("/{id}")
+    public AccessRequestResponseDto getAccessRequestById(@PathVariable Long id) {
+        return accessRequestService.getAccessRequestById(id);
+    }
     @PreAuthorize("hasAnyRole('MANAGER','ADMIN')")
-    public AccessRequest approveAccessRequest(@PathVariable Long id) {
-        return accessRequestService.approveAccessRequest(id);
+    @PutMapping("/{id}/approve")
+    public AccessRequest approveAccessRequest(
+            @PathVariable Long id,
+            @RequestBody DecisionDto dto) {
+
+        return accessRequestService.approveAccessRequest(id, dto.getComments());
     }
 
     @PutMapping("/{id}/deny")
     @PreAuthorize("hasAnyRole('MANAGER','ADMIN')")
-    public AccessRequest denyAccessRequest(@PathVariable Long id) {
-        return accessRequestService.denyAccessRequest(id);
+    public AccessRequest denyAccessRequest(
+            @PathVariable Long id,
+            @RequestBody DecisionDto dto) {
+
+        return accessRequestService.denyAccessRequest(id, dto.getComments());
     }
 
     @GetMapping("/pending")
@@ -65,8 +76,5 @@ public class AccessRequestController {
     public List<AccessRequestResponseDto> getRequestsBySystem(@PathVariable String systemName) {
         return accessRequestService.getRequestsBySystem(systemName);
     }
-    @GetMapping("/audit")
-    public List<AuditLog> getAuditLog() {
-        return auditLogRepository.findAll();
-    }
+
 }

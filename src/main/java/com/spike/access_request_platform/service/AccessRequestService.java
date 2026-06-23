@@ -45,7 +45,7 @@ public class AccessRequestService {
                 .map(this::mapToResponseDto)
                 .toList();
     }
-    public AccessRequest approveAccessRequest(Long id) {
+    public AccessRequest approveAccessRequest(Long id, String comments) {
         AccessRequest accessRequest = accessRequestRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Access request not found"));
         if (accessRequest.getStatus() != RequestStatus.PENDING) {
@@ -61,16 +61,17 @@ public class AccessRequestService {
         accessRequest.setDecidedBy(managerName);
         accessRequest.setDecisionDate(LocalDateTime.now());
         accessRequest.setStatus(RequestStatus.APPROVED);
+        accessRequest.setDecisionComments(comments);
         auditService.log(
                 accessRequest.getId(),
                 "APPROVED",
                 "system",
-                "Request approved"
+                comments
         );
         return accessRequestRepository.save(accessRequest);
     }
 
-    public AccessRequest denyAccessRequest(Long id) {
+    public AccessRequest denyAccessRequest(Long id, String comments) {
         AccessRequest accessRequest = accessRequestRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Access request not found"));
         if (accessRequest.getStatus() != RequestStatus.PENDING) {
@@ -86,11 +87,12 @@ public class AccessRequestService {
         accessRequest.setDecidedBy(managerName);
         accessRequest.setDecisionDate(LocalDateTime.now());
         accessRequest.setStatus(RequestStatus.DENIED);
+        accessRequest.setDecisionComments(comments);
         auditService.log(
                 accessRequest.getId(),
                 "DENIED",
                 "system",
-                "Request denied"
+                comments
         );
         return accessRequestRepository.save(accessRequest);
     }
@@ -99,6 +101,12 @@ public class AccessRequestService {
                 .stream()
                 .map(this::mapToResponseDto)
                 .toList();
+    }
+    public AccessRequestResponseDto getAccessRequestById(Long id) {
+        AccessRequest accessRequest = accessRequestRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Access request not found"));
+
+        return mapToResponseDto(accessRequest);
     }
     private AccessRequestResponseDto mapToResponseDto(AccessRequest accessRequest) {
         AccessRequestResponseDto dto = new AccessRequestResponseDto();
@@ -110,6 +118,7 @@ public class AccessRequestService {
         dto.setBusinessJustification(accessRequest.getBusinessJustification());
         dto.setStatus(accessRequest.getStatus());
         dto.setCreatedDate(accessRequest.getCreatedDate());
+        dto.setDecisionComments(accessRequest.getDecisionComments());
         dto.setDecidedBy(accessRequest.getDecidedBy());
         dto.setDecisionDate(accessRequest.getDecisionDate());
 

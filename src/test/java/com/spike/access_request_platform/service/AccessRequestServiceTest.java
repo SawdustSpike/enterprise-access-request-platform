@@ -55,7 +55,7 @@ class AccessRequestServiceTest {
 
         RuntimeException exception =
                 assertThrows(RuntimeException.class,
-                        () -> service.denyAccessRequest(1L));
+                        () -> service.denyAccessRequest(1L, "Denied for testing"));
 
         assertEquals(
                 "Only pending requests can be denied",
@@ -75,7 +75,7 @@ class AccessRequestServiceTest {
         when(repository.save(any(AccessRequest.class)))
                 .thenAnswer(invocation -> invocation.getArgument(0));
 
-        var result = service.approveAccessRequest(1L);
+        var result = service.approveAccessRequest(1L, "Approved for testing");
 
         assertEquals(RequestStatus.APPROVED, result.getStatus());
         assertEquals("manager", result.getDecidedBy());
@@ -97,7 +97,7 @@ class AccessRequestServiceTest {
         when(repository.save(any(AccessRequest.class)))
                 .thenAnswer(invocation -> invocation.getArgument(0));
 
-        var result = service.denyAccessRequest(1L);
+        var result = service.denyAccessRequest(1L, "Denied for testing");
 
         assertEquals(RequestStatus.DENIED, result.getStatus());
         assertEquals("manager", result.getDecidedBy());
@@ -116,7 +116,7 @@ class AccessRequestServiceTest {
 
         RuntimeException exception = assertThrows(
                 RuntimeException.class,
-                () -> service.approveAccessRequest(1L)
+                () -> service.approveAccessRequest(1L, "Approved For Testing")
         );
 
         assertEquals("Only pending requests can be approved", exception.getMessage());
@@ -130,7 +130,7 @@ class AccessRequestServiceTest {
 
         RuntimeException exception = assertThrows(
                 RuntimeException.class,
-                () -> service.approveAccessRequest(999L)
+                () -> service.approveAccessRequest(999L, "Approved For Testing")
         );
 
         assertEquals("Access request not found", exception.getMessage());
@@ -144,7 +144,7 @@ class AccessRequestServiceTest {
 
         RuntimeException exception = assertThrows(
                 RuntimeException.class,
-                () -> service.denyAccessRequest(999L)
+                () -> service.denyAccessRequest(999L, "Denied for Testing")
         );
 
         assertEquals("Access request not found", exception.getMessage());

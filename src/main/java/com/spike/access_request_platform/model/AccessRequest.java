@@ -29,6 +29,7 @@ public class AccessRequest {
     private LocalDateTime createdDate;
     private String decidedBy;
     private LocalDateTime DecisionDate;
-
+    @Column(length = 2000)
+    private String decisionComments;
 
 }

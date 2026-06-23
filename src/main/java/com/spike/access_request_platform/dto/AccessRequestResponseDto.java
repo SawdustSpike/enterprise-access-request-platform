@@ -17,4 +17,5 @@ public class AccessRequestResponseDto {
     private LocalDateTime createdDate;
     private String decidedBy;
     private LocalDateTime decisionDate;
+    private String decisionComments;
 }

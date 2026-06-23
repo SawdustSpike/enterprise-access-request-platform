@@ -1,10 +1,13 @@
 package com.spike.access_request_platform.service;
+import com.spike.access_request_platform.dto.AccessRequestMetricsDto;
 import com.spike.access_request_platform.dto.AccessRequestResponseDto;
+import com.spike.access_request_platform.dto.DashboardDto;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import com.spike.access_request_platform.dto.CreateAccessRequestDto;
 import com.spike.access_request_platform.model.AccessRequest;
-import com.spike.access_request_platform.service.AuditService;
+import com.spike.access_request_platform.service.NotificationService;
 import com.spike.access_request_platform.model.RequestStatus;
 import com.spike.access_request_platform.repository.AccessRequestRepository;
 import org.springframework.stereotype.Service;
@@ -20,11 +23,16 @@ public class AccessRequestService {
 
     private final AccessRequestRepository accessRequestRepository;
     private final AuditService auditService;
+    private final NotificationService notificationService;
     public AccessRequestService(
             AccessRequestRepository repository,
-            AuditService auditService) {
+            AuditService auditService,
+            NotificationService notificationService
+
+    ) {
         this.accessRequestRepository = repository;
         this.auditService = auditService;
+        this.notificationService = notificationService;
     }
 
     public AccessRequestResponseDto  createAccessRequest(CreateAccessRequestDto dto) {
@@ -36,7 +44,7 @@ public class AccessRequestService {
         accessRequest.setBusinessJustification(dto.getBusinessJustification());
         accessRequest.setStatus(RequestStatus.PENDING);
         accessRequest.setCreatedDate(LocalDateTime.now());
-
+        notificationService.notifyRequestCreated(accessRequest.getId(), accessRequest.getRequesterName());
         return mapToResponseDto(accessRequestRepository.save(accessRequest));
     }
     public List<AccessRequestResponseDto> getAllAccessRequests() {
@@ -68,6 +76,7 @@ public class AccessRequestService {
                 "system",
                 comments
         );
+        notificationService.notifyRequestApproved(accessRequest.getId(), accessRequest.getRequesterName());
         return accessRequestRepository.save(accessRequest);
     }
 
@@ -94,6 +103,7 @@ public class AccessRequestService {
                 "system",
                 comments
         );
+        notificationService.notifyRequestDenied(accessRequest.getId(), accessRequest.getRequesterName());
         return accessRequestRepository.save(accessRequest);
     }
     public List<AccessRequestResponseDto> getPendingRequests() {
@@ -147,5 +157,34 @@ public class AccessRequestService {
     public Page<AccessRequestResponseDto> getPagedAccessRequests(Pageable pageable) {
         return accessRequestRepository.findAll(pageable)
                 .map(this::mapToResponseDto);
+    }
+    public AccessRequestMetricsDto getMetrics() {
+        long pending = accessRequestRepository.countByStatus(RequestStatus.PENDING);
+        long approved = accessRequestRepository.countByStatus(RequestStatus.APPROVED);
+        long denied = accessRequestRepository.countByStatus(RequestStatus.DENIED);
+        long total = accessRequestRepository.count();
+
+        return new AccessRequestMetricsDto(total, pending, approved, denied);
+    }
+    public DashboardDto getDashboard() {
+
+        long total = accessRequestRepository.count();
+        long pending = accessRequestRepository.countByStatus(RequestStatus.PENDING);
+        long approved = accessRequestRepository.countByStatus(RequestStatus.APPROVED);
+        long denied = accessRequestRepository.countByStatus(RequestStatus.DENIED);
+
+        List<AccessRequestResponseDto> recent =
+                accessRequestRepository.findAll(PageRequest.of(0, 5))
+                        .stream()
+                        .map(this::mapToResponseDto)
+                        .toList();
+
+        return new DashboardDto(
+                total,
+                pending,
+                approved,
+                denied,
+                recent
+        );
     }
 }

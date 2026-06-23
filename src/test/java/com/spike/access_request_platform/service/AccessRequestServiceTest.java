@@ -22,8 +22,11 @@ class AccessRequestServiceTest {
     private final AuditService auditService =
             Mockito.mock(AuditService.class);
 
+    private final NotificationService notificationService =
+            Mockito.mock(NotificationService.class);
+
     private final AccessRequestService service =
-            new AccessRequestService(repository, auditService);
+            new AccessRequestService(repository, auditService, notificationService);
 
     @Test
     void createAccessRequest_setsStatusToPending() {

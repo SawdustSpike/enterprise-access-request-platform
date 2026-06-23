@@ -1,6 +1,5 @@
 package com.spike.access_request_platform.controller;
-import com.spike.access_request_platform.dto.AccessRequestResponseDto;
-import com.spike.access_request_platform.dto.CreateAccessRequestDto;
+import com.spike.access_request_platform.dto.*;
 import com.spike.access_request_platform.model.AccessRequest;
 import com.spike.access_request_platform.model.AuditLog;
 import com.spike.access_request_platform.model.RequestStatus;
@@ -9,23 +8,22 @@ import com.spike.access_request_platform.repository.AuditLogRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import jakarta.validation.Valid;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.security.access.prepost.PreAuthorize;
-import com.spike.access_request_platform.dto.DecisionDto;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+@Tag(name = "Access Requests", description = "Create, review, approve, deny, and search enterprise access requests")
 @RequestMapping("/access-requests")
 public class AccessRequestController {
 
     private final AccessRequestService accessRequestService;
-    private final AuditLogRepository auditLogRepository;
-    public AccessRequestController(
-            AccessRequestService service,
-            AuditLogRepository auditLogRepository) {
 
+    public AccessRequestController(
+            AccessRequestService service) {
         this.accessRequestService = service;
-        this.auditLogRepository = auditLogRepository;
     }
 
     @PostMapping
@@ -40,6 +38,7 @@ public class AccessRequestController {
     public AccessRequestResponseDto getAccessRequestById(@PathVariable Long id) {
         return accessRequestService.getAccessRequestById(id);
     }
+    @Operation(summary = "Approve an access request", description = "Approves a pending request and records an audit log entry with decision comments.")
     @PreAuthorize("hasAnyRole('MANAGER','ADMIN')")
     @PutMapping("/{id}/approve")
     public AccessRequest approveAccessRequest(
@@ -48,7 +47,7 @@ public class AccessRequestController {
 
         return accessRequestService.approveAccessRequest(id, dto.getComments());
     }
-
+    @Operation(summary = "Deny an access request", description = "Denies a pending request and records an audit log entry with decision comments.")
     @PutMapping("/{id}/deny")
     @PreAuthorize("hasAnyRole('MANAGER','ADMIN')")
     public AccessRequest denyAccessRequest(
@@ -75,6 +74,17 @@ public class AccessRequestController {
     @GetMapping("/system/{systemName}")
     public List<AccessRequestResponseDto> getRequestsBySystem(@PathVariable String systemName) {
         return accessRequestService.getRequestsBySystem(systemName);
+    }
+    @Operation(summary = "Get access request metrics", description = "Returns totals for pending, approved, denied, and all access requests.")
+    @GetMapping("/metrics")
+    @PreAuthorize("hasAnyRole('MANAGER','ADMIN')")
+    public AccessRequestMetricsDto getMetrics() {
+        return accessRequestService.getMetrics();
+    }
+    @GetMapping("/dashboard")
+    @PreAuthorize("hasAnyRole('MANAGER','ADMIN')")
+    public DashboardDto getDashboard() {
+        return accessRequestService.getDashboard();
     }
 
 }

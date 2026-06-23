@@ -15,4 +15,5 @@ public interface AccessRequestRepository extends JpaRepository<AccessRequest, Lo
     List<AccessRequest> findByRequesterNameContainingIgnoreCase(String requesterName);
 
     List<AccessRequest> findBySystemNameContainingIgnoreCase(String systemName);
+    long countByStatus(RequestStatus status);
 }

@@ -1,260 +1,265 @@
 # Enterprise Access Request Platform
 
-![Java](https://img.shields.io/badge/Java-21-blue)
-![Spring Boot](https://img.shields.io/badge/Spring_Boot-4.x-green)
-![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-blue)
-![Docker](https://img.shields.io/badge/Docker-Enabled-blue)
-![Terraform](https://img.shields.io/badge/Terraform-IaC-purple)
-![Azure](https://img.shields.io/badge/Azure-Deployed-0078D4)
-
-A cloud-native enterprise access governance platform built with Java 21, Spring Boot, PostgreSQL, Docker, Terraform, and Azure.
-
-The application enables employees to submit access requests, managers to approve or deny those requests, and administrators to maintain complete audit and compliance visibility. The platform demonstrates enterprise software engineering practices including secure role-based authorization, workflow automation, auditing, reporting, cloud deployment, and infrastructure-as-code.
+> Enterprise-grade Access Request Platform built with Spring Boot, secured with Spring Security, containerized with Docker, and deployed to both **Microsoft Azure** and **Amazon Web Services (AWS)**.
 
 ---
 
-## Project Goals
+## Overview
 
-This project was designed to showcase enterprise application development patterns commonly used within large organizations and financial institutions.
+The Enterprise Access Request Platform simulates a real-world internal application used by large organizations to manage employee access requests for business systems.
 
-Key objectives included:
+Users can submit access requests, managers review and approve or deny requests, administrators audit historical activity, and operations teams monitor system health and metrics.
 
-* Secure role-based access control
-* Approval workflow automation
-* Audit and compliance tracking
-* Cloud-native deployment on Azure
-* Infrastructure as Code using Terraform
-* REST API design and documentation
-* Automated testing and validation
-* Production-style monitoring and reporting
+The project was intentionally designed to showcase enterprise software engineering practices rather than simply implementing CRUD operations.
 
 ---
 
-## Key Features
+## Features
 
-### Access Governance
-
-* Submit access requests
-* Approval and denial workflows
-* Decision comments
-* Request status tracking
-* Request lookup by ID
-* Request filtering and search capabilities
-
-### Security & Authorization
-
-* Spring Security integration
-* Role-based access control (Employee, Manager, Admin)
-* Endpoint-level authorization
-* Protected management operations
-* Secure API access
-
-### Audit & Compliance
-
-* Complete audit logging
-* Audit filtering by user
-* Audit filtering by action
-* Audit filtering by date range
-* Request-specific audit history
-
-### Notification Tracking
-
-* Notification logging for request lifecycle events
-* Request-specific notification history
-* Extensible notification framework
-* Ready for future email provider integration
-
-### Reporting & Metrics
-
-* Dashboard endpoint
-* Request metrics endpoint
-* Pending request reporting
-* Approval and denial statistics
-* Recent activity reporting
-
-### API Quality
-
-* OpenAPI / Swagger documentation
-* Request validation
-* Standardized exception handling
-* Pagination support
-* Search and filtering endpoints
-* Automated test coverage
+- Spring Boot REST API
+- Spring Security Role-Based Access Control
+- Basic Authentication
+- Access Request Workflow
+- Approval / Denial Process
+- Audit Logging
+- Metrics Dashboard API
+- Health Endpoints
+- OpenAPI / Swagger Documentation
+- Docker Containerization
+- Multi-Cloud Deployment
+- Infrastructure as Code using Terraform
 
 ---
 
-## Architecture
+# Architecture
 
-```mermaid
-flowchart TD
-    User[User / Manager / Admin] --> Swagger[Swagger UI / API Client]
+![Architecture](architecture.png)
 
-    Swagger --> App[Azure Container App<br/>Spring Boot REST API]
+The application follows a layered Spring Boot architecture with separate controllers, services, repositories, security configuration, audit logging, and metrics endpoints.
 
-    App --> Security[Spring Security<br/>Role-Based Access Control]
+The same application is capable of being deployed to either Azure or AWS without application code changes.
 
-    App --> DB[(Azure PostgreSQL<br/>Flexible Server)]
+---
 
-    App --> Audit[Audit Logging]
-    App --> Notify[Notification Logging]
-    App --> Metrics[Dashboard / Metrics API]
+# Technology Stack
 
-    Audit --> DB
-    Notify --> DB
-    Metrics --> DB
+## Backend
 
-    GitHub[GitHub Repository] --> Docker[Docker Image Build]
-    Docker --> ACR[Azure Container Registry]
-    ACR --> App
+- Java 21
+- Spring Boot
+- Spring Security
+- Spring Data JPA
+- Hibernate
+- PostgreSQL
+- Maven
 
-    Terraform[Terraform IaC] --> Azure[Azure Resources]
-    Azure --> App
-    Azure --> ACR
-    Azure --> DB
+## API
+
+- REST
+- OpenAPI 3
+- Swagger UI
+
+## DevOps
+
+- Docker
+- Terraform
+- Git
+- GitHub
+
+## Cloud
+
+### Microsoft Azure
+
+- Azure Container Apps
+- Azure Container Registry
+- Azure PostgreSQL Flexible Server
+
+### Amazon Web Services
+
+- ECS Fargate
+- Application Load Balancer
+- Elastic Container Registry (ECR)
+- CloudWatch
+- IAM
+- VPC
+
+---
+
+# Azure Deployment
+
+The application was first deployed into Microsoft Azure using Azure Container Apps backed by Azure PostgreSQL.
+
+Azure provides container hosting, managed PostgreSQL, networking, and scaling while Docker is used to package the application.
+
+### Azure Container App
+
+![Azure Deployment](azure-container-app.png)
+
+---
+
+# AWS Deployment
+
+The same application was later deployed into AWS using a completely different cloud architecture.
+
+Infrastructure was provisioned using Terraform and the application was deployed as a Docker container running on ECS Fargate behind an Application Load Balancer.
+
+### AWS Architecture
+
+- Docker Image
+- Amazon ECR
+- ECS Fargate
+- Application Load Balancer
+- Target Groups
+- CloudWatch Logs
+- Terraform Infrastructure
+
+---
+
+### ECS Service
+
+![ECS Service](ecs-service.png)
+
+---
+
+### Application Load Balancer
+
+![Load Balancer](load-balancer.png)
+
+---
+
+### Target Group Health
+
+![Target Group](target-group.png)
+
+---
+
+### CloudWatch Logging
+
+![CloudWatch](cloudwatch.png)
+
+---
+
+# API Documentation
+
+Swagger provides interactive documentation for every endpoint.
+
+Features include:
+
+- Access Requests
+- Audit Logs
+- Metrics
+- Health Checks
+
+![Swagger](swagger.png)
+
+---
+
+## Sample Request
+
+Example endpoint execution through Swagger UI.
+
+![Request Example](request-example.png)
+
+---
+
+## Metrics Endpoint
+
+The application exposes metrics for operational dashboards.
+
+Example:
+
+- Total Requests
+- Pending Requests
+- Approved Requests
+- Denied Requests
+
+![Metrics](metrics.png)
+
+---
+
+# Application Running
+
+The deployed AWS application exposes a public health endpoint through the Application Load Balancer.
+
+![Application Running](application-running.png)
+
+---
+
+# Infrastructure as Code
+
+AWS infrastructure is managed using Terraform.
+
+Infrastructure includes:
+
+- VPC
+- ECS Cluster
+- ECS Service
+- ECR Repository
+- Application Load Balancer
+- Target Group
+- IAM Resources
+- Networking
+
+Terraform allows the entire AWS environment to be recreated from source.
+
+![Terraform](terraform-architecture.png)
+
+---
+
+# What I Learned
+
+Building this project provided hands-on experience with enterprise application architecture and cloud deployment across multiple providers.
+
+Highlights include:
+
+- Designing secure REST APIs
+- Implementing role-based authorization
+- Docker containerization
+- Deploying to Azure Container Apps
+- Deploying to AWS ECS Fargate
+- Configuring Application Load Balancers
+- Infrastructure as Code using Terraform
+- Cloud logging and observability with CloudWatch
+- Managing PostgreSQL-backed applications in cloud environments
+
+---
+
+# Future Enhancements
+
+Planned improvements include:
+
+- JWT Authentication
+- OAuth2 / OpenID Connect
+- CI/CD with GitHub Actions
+- Redis Caching
+- SQS Event Processing
+- SNS Notifications
+- EventBridge Integration
+- Secrets Manager
+- Auto Scaling Policies
+- Prometheus Metrics
+- Grafana Dashboards
+- Kubernetes Deployment
+- Unit and Integration Test Coverage
+
+---
+
+# Repository Structure
+
+```
+src/
+terraform-aws/
+docker/
+docs/
+README.md
 ```
 
 ---
 
-## Application Screenshots
-
-### System Architecture
-
-![Architecture Diagram](docs/images/architecture.png)
-
-### Swagger API Overview
-
-![Swagger Overview](docs/images/swagger-overview.png)
-
-### Azure Deployment
-
-![Azure Container App](docs/images/azure-container-app.png)
-
-### Dashboard & Metrics
-
-![Metrics Endpoint](docs/images/metrics.png)
-
-![Dashboard Endpoint](docs/images/dashboard.png)
-
-### Access Request Workflow
-
-![Request Example](docs/images/request-example.png)
-
----
-
-## Technology Stack
-
-### Backend
-
-* Java 21
-* Spring Boot
-* Spring Security
-* Spring Data JPA
-* Maven
-
-### Database
-
-* PostgreSQL
-* Azure PostgreSQL Flexible Server
-
-### Cloud & Infrastructure
-
-* Azure Container Apps
-* Azure Container Registry
-* Terraform
-* Docker
-
-### Testing & Documentation
-
-* JUnit
-* Mockito
-* Swagger / OpenAPI
-
----
-
-## Live Azure Deployment
-
-### Health Endpoint
-
-https://access-request-platform.bluedesert-6a38596d.eastus2.azurecontainerapps.io/health
-
-### Swagger UI
-
-https://access-request-platform.bluedesert-6a38596d.eastus2.azurecontainerapps.io/swagger-ui/index.html
-
----
-
-## Running Locally
-
-### Build
-
-```bash
-./mvnw clean package
-```
-
-### Run
-
-```bash
-./mvnw spring-boot:run
-```
-
-### Swagger
-
-```text
-http://localhost:8080/swagger-ui/index.html
-```
-
----
-
-## Docker
-
-### Build Image
-
-```bash
-docker build -t access-request-platform .
-```
-
-### Run Container
-
-```bash
-docker run -p 8080:8080 access-request-platform
-```
-
----
-
-## Technical Highlights
-
-This project demonstrates:
-
-* Enterprise workflow automation
-* Secure API development
-* Cloud-native architecture
-* Infrastructure as Code
-* Database-driven application design
-* Role-based authorization
-* Audit and compliance controls
-* Containerized deployment strategies
-* Production-ready API documentation
-* Automated testing practices
-
----
-
-## Future Enhancements
-
-* Azure Active Directory integration
-* Email delivery via Azure Communication Services or SendGrid
-* GitHub Actions CI/CD pipeline
-* Administrative web dashboard
-* Request escalation workflows
-* Approval delegation
-* Advanced reporting and analytics
-* Multi-tenant support
-
----
-
-## Author
+# Author
 
 Michael Cowell
 
 Senior Software Engineer
 
-Built as a portfolio project to demonstrate enterprise Java, Spring Boot, Azure, Terraform, Security, and cloud architecture skills.
+Built as a portfolio project demonstrating enterprise Java development, cloud architecture, Infrastructure as Code, and multi-cloud deployment.

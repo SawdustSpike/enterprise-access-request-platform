@@ -2,12 +2,11 @@ target/
 .idea/
 *.iml
 # Terraform
-**/.terraform/*
+.terraform/
 *.tfstate
 *.tfstate.*
-*.tfvars
 .terraform.lock.hcl
-
+terraform.tfvars
 mvnw.cmd
 mvnw
 

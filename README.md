@@ -33,7 +33,7 @@ The project was intentionally designed to showcase enterprise software engineeri
 
 # Architecture
 
-![Architecture](architecture.png)
+![Architecture](docs/images/architecture.png)
 
 The application follows a layered Spring Boot architecture with separate controllers, services, repositories, security configuration, audit logging, and metrics endpoints.
 
@@ -93,7 +93,7 @@ Azure provides container hosting, managed PostgreSQL, networking, and scaling wh
 
 ### Azure Container App
 
-![Azure Deployment](azure-container-app.png)
+![Azure Deployment](docs/images/azure-container-app.png)
 
 ---
 
@@ -117,25 +117,25 @@ Infrastructure was provisioned using Terraform and the application was deployed 
 
 ### ECS Service
 
-![ECS Service](ecs-service.png)
+![ECS Service](docs/images/ecs-service.png)
 
 ---
 
 ### Application Load Balancer
 
-![Load Balancer](load-balancer.png)
+![Load Balancer](docs/images/load-balancer.png)
 
 ---
 
 ### Target Group Health
 
-![Target Group](target-group.png)
+![Target Group](docs/images/target-group.png)
 
 ---
 
 ### CloudWatch Logging
 
-![CloudWatch](cloudwatch.png)
+![CloudWatch](docs/images/cloudwatch.png)
 
 ---
 
@@ -150,7 +150,7 @@ Features include:
 - Metrics
 - Health Checks
 
-![Swagger](swagger.png)
+![Swagger](docs/images/swagger.png)
 
 ---
 
@@ -158,7 +158,7 @@ Features include:
 
 Example endpoint execution through Swagger UI.
 
-![Request Example](request-example.png)
+![Request Example](docs/images/request-example.png)
 
 ---
 
@@ -173,7 +173,7 @@ Example:
 - Approved Requests
 - Denied Requests
 
-![Metrics](metrics.png)
+![Metrics](docs/images/metrics.png)
 
 ---
 
@@ -181,7 +181,7 @@ Example:
 
 The deployed AWS application exposes a public health endpoint through the Application Load Balancer.
 
-![Application Running](application-running.png)
+![Application Running](docs/images/application-running.png)
 
 ---
 
@@ -202,7 +202,7 @@ Infrastructure includes:
 
 Terraform allows the entire AWS environment to be recreated from source.
 
-![Terraform](terraform-architecture.png)
+![Terraform](docs/images/terraform-architecture.png)
 
 ---
 

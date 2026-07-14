@@ -31,13 +31,75 @@ The project was intentionally designed to showcase enterprise software engineeri
 
 ---
 
-# Architecture
+## Multi-Cloud Architecture
 
-![Architecture](docs/images/architecture.png)
+```mermaid
+flowchart TB
+    User[User / Manager / Admin]
+    GitHub[GitHub Repository]
+    Build[Maven Build + Docker Image]
 
-The application follows a layered Spring Boot architecture with separate controllers, services, repositories, security configuration, audit logging, and metrics endpoints.
+    subgraph App["Application Layer"]
+        API[Spring Boot REST API]
+        Security[Spring Security<br/>Role-Based Access Control]
+        Requests[Access Request Workflow]
+        Audit[Audit Logging]
+        Notify[Notification Logging]
+        Metrics[Metrics and Dashboard API]
+        Health[Health Endpoints]
+        Swagger[Swagger / OpenAPI]
+    end
 
-The same application is capable of being deployed to either Azure or AWS without application code changes.
+    subgraph Azure["Microsoft Azure Deployment"]
+        ACR[Azure Container Registry]
+        ACA[Azure Container Apps]
+        AzureDB[(Azure PostgreSQL<br/>Flexible Server)]
+    end
+
+    subgraph AWS["Amazon Web Services Deployment"]
+        ECR[Amazon ECR]
+        ALB[Application Load Balancer]
+        ECS[Amazon ECS Fargate]
+        RDS[(Amazon RDS<br/>PostgreSQL)]
+        CW[Amazon CloudWatch]
+    end
+
+    Terraform[Terraform Infrastructure as Code]
+
+    User --> Swagger
+    Swagger --> API
+
+    GitHub --> Build
+    Build --> ACR
+    Build --> ECR
+
+    ACR --> ACA
+    ACA --> API
+    API --> AzureDB
+
+    ECR --> ECS
+    ALB --> ECS
+    ECS --> API
+    API --> RDS
+    ECS --> CW
+
+    API --> Security
+    API --> Requests
+    API --> Audit
+    API --> Notify
+    API --> Metrics
+    API --> Health
+    API --> Swagger
+
+    Terraform --> ACR
+    Terraform --> ACA
+    Terraform --> AzureDB
+    Terraform --> ECR
+    Terraform --> ALB
+    Terraform --> ECS
+    Terraform --> RDS
+    Terraform --> CW
+```
 
 ---
 
